@@ -41,6 +41,9 @@ import 'package:budgeting_app/features/loans/presentation/loan_account_detail_sc
 import 'package:budgeting_app/features/loans/presentation/loan_prepayment_planner_screen.dart';
 import 'package:budgeting_app/features/loans/data/in_memory_loan_account_repository.dart';
 
+// Data tools
+import 'package:budgeting_app/features/settings/presentation/data_tools_screen.dart';
+
 /// Single in-memory transaction repository instance used across the app.
 final _transactionRepository = InMemoryTransactionRepository();
 
@@ -85,6 +88,9 @@ class AppRoutes {
   static const loans = '/loans';
   static const loanDetail = '/loan-detail';
   static const loanPrepayment = '/loan-prepayment';
+
+  // Data tools
+  static const dataTools = '/data-tools';
 }
 
 /// Global routes map used by MaterialApp.routes
@@ -99,6 +105,14 @@ final Map<String, WidgetBuilder> appRoutes = {
 
   // Transactions
   AppRoutes.addTransaction: (_) => AddTransactionScreen(
+        transactionRepository: _transactionRepository,
+        savingsRepository: _savingsRepository,
+        cashRepository: _cashRepository,
+        cardRepository: _cardRepository,
+      ),
+
+  // Data tools
+  AppRoutes.dataTools: (_) => DataToolsScreen(
         transactionRepository: _transactionRepository,
         savingsRepository: _savingsRepository,
         cashRepository: _cashRepository,

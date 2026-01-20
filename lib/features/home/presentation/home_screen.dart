@@ -77,27 +77,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final allTxns = await widget.transactionRepository.query();
     allTxns.sort((a, b) => b.bookingDate.compareTo(a.bookingDate));
 
-    final now = DateTime.now();
-    final monthStart = DateTime(now.year, now.month, 1);
-    final nextMonthStart = (now.month == 12)
-        ? DateTime(now.year + 1, 1, 1)
-        : DateTime(now.year, now.month + 1, 1);
-    final monthEnd = nextMonthStart.subtract(const Duration(milliseconds: 1));
-
-    final totalSummary = await widget.transactionRepository
-        .computeIncomeExpenseSummary();
-    final monthSummary = await widget.transactionRepository
-        .computeIncomeExpenseSummary(from: monthStart, to: monthEnd);
-
-    final monthLabel = _formatMonthYear(monthStart);
-
     return _HomeSnapshot(
       totalAvailable: savingsTotal + cashTotal - cardDueTotal,
-      totalIncome: totalSummary.totalIncome,
-      monthIncome: monthSummary.totalIncome,
-      totalExpense: totalSummary.totalExpense,
-      monthExpense: monthSummary.totalExpense,
-      monthLabel: monthLabel,
+      totalIncome: 0, // TODO: build analytics summaries
+      monthIncome: 0,
+      totalExpense: 0,
+      monthExpense: 0,
       recent: allTxns.take(8).toList(growable: false),
     );
   }
@@ -112,12 +97,11 @@ class _HomeScreenState extends State<HomeScreen> {
         final snapshot = snap.data;
         final totalBalance = snapshot?.totalAvailable ?? 0.0;
 
-        // These are computed from transactions (income/expense only).
+        // For now these remain 0 until we wire analytics to categories.
         final totalIncomeTillDate = snapshot?.totalIncome ?? 0.0;
         final incomeThisMonth = snapshot?.monthIncome ?? 0.0;
         final totalExpenseTillDate = snapshot?.totalExpense ?? 0.0;
         final expenseThisMonth = snapshot?.monthExpense ?? 0.0;
-        final monthLabel = snapshot?.monthLabel ?? _formatMonthYear(DateTime.now());
 
         final categories = <_Category>[
           const _Category(icon: Icons.savings, label: 'Savings'),
@@ -155,7 +139,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     monthIncome: incomeThisMonth,
                     totalExpense: totalExpenseTillDate,
                     monthExpense: expenseThisMonth,
-                    monthLabel: monthLabel,
                   ),
                   const SizedBox(height: AppSpacing.lg),
 
@@ -226,7 +209,6 @@ class _HomeSnapshot {
   final double monthIncome;
   final double totalExpense;
   final double monthExpense;
-  final String monthLabel;
   final List<Transaction> recent;
 
   const _HomeSnapshot({
@@ -235,7 +217,6 @@ class _HomeSnapshot {
     required this.monthIncome,
     required this.totalExpense,
     required this.monthExpense,
-    required this.monthLabel,
     required this.recent,
   });
 }
@@ -286,25 +267,6 @@ String _formatDate(DateTime date) {
   return '$d $m';
 }
 
-String _formatMonthYear(DateTime date) {
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  final m = months[date.month - 1];
-  return '$m ${date.year}';
-}
-
 class _HomeHeader extends StatelessWidget {
   const _HomeHeader();
 
@@ -330,7 +292,7 @@ class _HomeHeader extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.settings_outlined),
               onPressed: () {
-                // TODO: settings screen
+                Navigator.of(context).pushNamed(AppRoutes.dataTools);
               },
             ),
           ],
@@ -394,7 +356,6 @@ class _SummaryRow extends StatelessWidget {
   final double monthIncome;
   final double totalExpense;
   final double monthExpense;
-  final String monthLabel;
 
   const _SummaryRow({
     required this.currency,
@@ -402,7 +363,6 @@ class _SummaryRow extends StatelessWidget {
     required this.monthIncome,
     required this.totalExpense,
     required this.monthExpense,
-    required this.monthLabel,
   });
 
   @override
@@ -414,7 +374,6 @@ class _SummaryRow extends StatelessWidget {
             label: 'Total Income',
             totalAmount: totalIncome,
             monthAmount: monthIncome,
-            monthLabel: monthLabel,
             currency: currency,
             isIncome: true,
           ),
@@ -425,7 +384,6 @@ class _SummaryRow extends StatelessWidget {
             label: 'Total Expense',
             totalAmount: totalExpense,
             monthAmount: monthExpense,
-            monthLabel: monthLabel,
             currency: currency,
             isIncome: false,
           ),
@@ -439,7 +397,6 @@ class _SummaryCard extends StatelessWidget {
   final String label;
   final double totalAmount;
   final double monthAmount;
-  final String monthLabel;
   final AppCurrencyService currency;
   final bool isIncome;
 
@@ -447,7 +404,6 @@ class _SummaryCard extends StatelessWidget {
     required this.label,
     required this.totalAmount,
     required this.monthAmount,
-    required this.monthLabel,
     required this.currency,
     required this.isIncome,
   });
@@ -497,7 +453,7 @@ class _SummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '${currency.format(monthAmount)} • $monthLabel',
+            '${currency.format(monthAmount)} • April 2025',
             style: textTheme.bodyMedium?.copyWith(color: fg.withOpacity(0.8)),
           ),
         ],
