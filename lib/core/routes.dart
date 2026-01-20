@@ -5,11 +5,11 @@ import 'package:budgeting_app/features/home/presentation/home_screen.dart';
 
 // Transactions
 import 'package:budgeting_app/features/transactions/presentation/add_transaction_screen.dart';
-import 'package:budgeting_app/features/transactions/data/in_memory_transaction_repository.dart';
+import 'package:budgeting_app/core/di/app_container.dart';
 
 // Credit Cards
 import 'package:budgeting_app/features/cards/domain/credit_card.dart';
-import 'package:budgeting_app/features/cards/data/in_memory_card_repository.dart';
+import 'package:budgeting_app/features/cards/data/card_repository.dart';
 import 'package:budgeting_app/features/cards/presentation/credit_cards_screen.dart';
 import 'package:budgeting_app/features/cards/presentation/add_card_screen.dart';
 import 'package:budgeting_app/features/cards/presentation/credit_card_detail_screen.dart';
@@ -17,12 +17,12 @@ import 'package:budgeting_app/features/cards/presentation/credit_card_detail_scr
 // Savings
 import 'package:budgeting_app/features/savings/presentation/savings_accounts_screen.dart';
 import 'package:budgeting_app/features/savings/presentation/savings_account_detail_screen.dart';
-import 'package:budgeting_app/features/savings/data/in_memory_savings_account_repository.dart';
+import 'package:budgeting_app/features/savings/data/savings_account_repository.dart';
 
 // Cash
 import 'package:budgeting_app/features/cash/presentation/cash_accounts_screen.dart';
 import 'package:budgeting_app/features/cash/presentation/cash_account_detail_screen.dart';
-import 'package:budgeting_app/features/cash/data/in_memory_cash_account_repository.dart';
+import 'package:budgeting_app/features/cash/data/cash_account_repository.dart';
 
 // Insurance
 import 'package:budgeting_app/features/insurance/presentation/insurance_list_screen.dart';
@@ -44,17 +44,11 @@ import 'package:budgeting_app/features/loans/data/in_memory_loan_account_reposit
 // Data tools
 import 'package:budgeting_app/features/settings/presentation/data_tools_screen.dart';
 
-/// Single in-memory transaction repository instance used across the app.
-final _transactionRepository = InMemoryTransactionRepository();
-
-/// Single in-memory card repository instance for credit cards.
-final _cardRepository = InMemoryCardRepository();
-
-/// Single in-memory savings repository instance.
-final _savingsRepository = InMemorySavingsAccountRepository();
-
-/// Single in-memory cash repository instance.
-final _cashRepository = InMemoryCashAccountRepository();
+// Singletons (backed by Hive) live in AppContainer.
+final _transactionRepository = AppContainer.transactions;
+final CashAccountRepository _cashRepository = AppContainer.cash;
+final SavingsAccountRepository _savingsRepository = AppContainer.savings;
+final CardRepository _cardRepository = AppContainer.cards;
 
 class AppRoutes {
   // Core
