@@ -12,6 +12,16 @@ import 'package:budgeting_app/features/transactions/domain/transaction.dart';
 /// should depend on this abstraction instead of talking directly to storage.
 abstract class TransactionRepository {
   // ---------------------------------------------------------------------------
+  // WATCH
+  // ---------------------------------------------------------------------------
+
+  /// Emits an event whenever the ledger changes.
+  ///
+  /// Screens can listen to this to refresh derived totals (balances, dues,
+  /// summaries) without having to manually plumb callbacks through navigation.
+  Stream<void> watchAll();
+
+  // ---------------------------------------------------------------------------
   // CREATE
   // ---------------------------------------------------------------------------
 

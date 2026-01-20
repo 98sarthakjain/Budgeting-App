@@ -29,8 +29,23 @@ class CreditCardsScreen extends StatefulWidget {
 }
 
 class _CreditCardsScreenState extends State<CreditCardsScreen> {
-  late final StreamSubscription<List<dynamic>> _txnSub;
+  late final StreamSubscription<void> _txnSub;
   bool _showClosed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Refresh when ledger changes (payments/expenses/transfers).
+    _txnSub = widget.transactionRepository.watchAll().listen((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _txnSub.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +220,11 @@ class _Header extends StatelessWidget {
           builder: (context, snapshot) {
             double totalDue = 0;
             if (snapshot.hasData) {
-              totalDue = snapshot.data!.fold<double>(0, (sum, v) => sum + v);
+              // Cards are liabilities: due is positive when ledger balance is negative.
+              totalDue = snapshot.data!.fold<double>(
+                0,
+                (sum, v) => sum + (-v).clamp(0, double.infinity),
+              );
             }
 
             return Column(

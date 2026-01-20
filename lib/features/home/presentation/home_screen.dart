@@ -6,14 +6,11 @@ import 'package:budgeting_app/core/widgets/app_card.dart';
 import 'package:budgeting_app/core/widgets/amount_text.dart';
 import 'package:budgeting_app/core/services/app_currency_service.dart';
 
-import 'package:budgeting_app/features/transactions/presentation/add_transaction_screen.dart';
-
 import 'package:budgeting_app/features/transactions/data/transaction_repository.dart';
 import 'package:budgeting_app/features/transactions/domain/transaction.dart';
 import 'package:budgeting_app/features/savings/data/savings_account_repository.dart';
 import 'package:budgeting_app/features/cash/data/cash_account_repository.dart';
 import 'package:budgeting_app/features/cards/data/card_repository.dart';
-import 'package:budgeting_app/features/transactions/presentation/add_transaction_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final TransactionRepository transactionRepository;
@@ -82,11 +79,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final now = DateTime.now();
     final monthStart = DateTime(now.year, now.month, 1);
+    final nextMonthStart = (now.month == 12)
+        ? DateTime(now.year + 1, 1, 1)
+        : DateTime(now.year, now.month + 1, 1);
+    final monthEnd = nextMonthStart.subtract(const Duration(milliseconds: 1));
 
     final totalSummary = await widget.transactionRepository
         .computeIncomeExpenseSummary();
     final monthSummary = await widget.transactionRepository
-        .computeIncomeExpenseSummary(from: monthStart, to: now);
+        .computeIncomeExpenseSummary(from: monthStart, to: monthEnd);
+
+    final monthLabel = _formatMonthYear(monthStart);
 
     return _HomeSnapshot(
       totalAvailable: savingsTotal + cashTotal - cardDueTotal,
@@ -94,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
       monthIncome: monthSummary.totalIncome,
       totalExpense: totalSummary.totalExpense,
       monthExpense: monthSummary.totalExpense,
+      monthLabel: monthLabel,
       recent: allTxns.take(8).toList(growable: false),
     );
   }
@@ -102,18 +106,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final currency = AppCurrencyService.instance;
 
-    final monthLabel = _formatMonthYear(DateTime.now());
     return FutureBuilder<_HomeSnapshot>(
       future: _snapshotFuture,
       builder: (context, snap) {
         final snapshot = snap.data;
         final totalBalance = snapshot?.totalAvailable ?? 0.0;
 
-        // For now these remain 0 until we wire analytics to categories.
+        // These are computed from transactions (income/expense only).
         final totalIncomeTillDate = snapshot?.totalIncome ?? 0.0;
         final incomeThisMonth = snapshot?.monthIncome ?? 0.0;
         final totalExpenseTillDate = snapshot?.totalExpense ?? 0.0;
         final expenseThisMonth = snapshot?.monthExpense ?? 0.0;
+        final monthLabel = snapshot?.monthLabel ?? _formatMonthYear(DateTime.now());
 
         final categories = <_Category>[
           const _Category(icon: Icons.savings, label: 'Savings'),
@@ -126,10 +130,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
         return Scaffold(
           floatingActionButton: _AddTransactionFab(
-            transactionRepository: widget.transactionRepository,
-            savingsRepository: widget.savingsRepository,
-            cashRepository: widget.cashRepository,
-            cardRepository: widget.cardRepository,
             onTransactionAdded: _refresh,
           ),
           body: SafeArea(
@@ -151,11 +151,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   _SummaryRow(
                     currency: currency,
-                    monthLabel: monthLabel,
                     totalIncome: totalIncomeTillDate,
                     monthIncome: incomeThisMonth,
                     totalExpense: totalExpenseTillDate,
                     monthExpense: expenseThisMonth,
+                    monthLabel: monthLabel,
                   ),
                   const SizedBox(height: AppSpacing.lg),
 
@@ -226,6 +226,7 @@ class _HomeSnapshot {
   final double monthIncome;
   final double totalExpense;
   final double monthExpense;
+  final String monthLabel;
   final List<Transaction> recent;
 
   const _HomeSnapshot({
@@ -234,6 +235,7 @@ class _HomeSnapshot {
     required this.monthIncome,
     required this.totalExpense,
     required this.monthExpense,
+    required this.monthLabel,
     required this.recent,
   });
 }
@@ -282,6 +284,25 @@ String _formatDate(DateTime date) {
   final d = date.day.toString().padLeft(2, '0');
   final m = months[date.month - 1];
   return '$d $m';
+}
+
+String _formatMonthYear(DateTime date) {
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
+  final m = months[date.month - 1];
+  return '$m ${date.year}';
 }
 
 class _HomeHeader extends StatelessWidget {
@@ -393,9 +414,9 @@ class _SummaryRow extends StatelessWidget {
             label: 'Total Income',
             totalAmount: totalIncome,
             monthAmount: monthIncome,
+            monthLabel: monthLabel,
             currency: currency,
             isIncome: true,
-            monthLabel: monthLabel,
           ),
         ),
         const SizedBox(width: AppSpacing.md),
@@ -404,9 +425,9 @@ class _SummaryRow extends StatelessWidget {
             label: 'Total Expense',
             totalAmount: totalExpense,
             monthAmount: monthExpense,
+            monthLabel: monthLabel,
             currency: currency,
             isIncome: false,
-            monthLabel: monthLabel,
           ),
         ),
       ],
@@ -418,17 +439,17 @@ class _SummaryCard extends StatelessWidget {
   final String label;
   final double totalAmount;
   final double monthAmount;
+  final String monthLabel;
   final AppCurrencyService currency;
   final bool isIncome;
-  final String monthLabel;
 
   const _SummaryCard({
     required this.label,
     required this.totalAmount,
     required this.monthAmount,
+    required this.monthLabel,
     required this.currency,
     required this.isIncome,
-    required this.monthLabel,
   });
 
   @override
@@ -476,7 +497,7 @@ class _SummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            '${currency.format(monthAmount)} • April 2025',
+            '${currency.format(monthAmount)} • $monthLabel',
             style: textTheme.bodyMedium?.copyWith(color: fg.withOpacity(0.8)),
           ),
         ],
@@ -637,49 +658,33 @@ class _RecentTile extends StatelessWidget {
   }
 }
 
-
 class _AddTransactionFab extends StatelessWidget {
-  final TransactionRepository transactionRepository;
-  final SavingsAccountRepository savingsRepository;
-  final CashAccountRepository cashRepository;
-  final CardRepository cardRepository;
-  final VoidCallback? onTransactionAdded;
+  final VoidCallback onTransactionAdded;
 
-  const _AddTransactionFab({
-    required this.transactionRepository,
-    required this.savingsRepository,
-    required this.cashRepository,
-    required this.cardRepository,
-    this.onTransactionAdded,
-  });
-
-  Future<void> _open(BuildContext context, {required String kind, bool initialToCreditCard = false}) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => AddTransactionScreen(
-          transactionRepository: transactionRepository,
-          savingsRepository: savingsRepository,
-          cashRepository: cashRepository,
-          cardRepository: cardRepository,
-          initialKind: kind,
-          initialToCreditCard: initialToCreditCard,
-        ),
-      ),
-    );
-    onTransactionAdded?.call();
-  }
+  const _AddTransactionFab({required this.onTransactionAdded});
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
       onPressed: () {
+        final parentContext = context;
+
         showModalBottomSheet<void>(
-          context: context,
+          context: parentContext,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
-          builder: (context) {
-            final textTheme = Theme.of(context).textTheme;
+          builder: (sheetContext) {
+            final textTheme = Theme.of(sheetContext).textTheme;
+
+            Future<void> goToAdd() async {
+              Navigator.of(sheetContext).pop(); // close sheet first
+              final changed = await Navigator.of(
+                parentContext,
+              ).pushNamed(AppRoutes.addTransaction);
+              if (changed == true) onTransactionAdded();
+            }
+
             return Padding(
               padding: const EdgeInsets.fromLTRB(
                 AppSpacing.lg,
@@ -696,34 +701,12 @@ class _AddTransactionFab extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.arrow_downward),
                     title: const Text('Income'),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      _open(context, kind: 'income');
-                    },
+                    onTap: goToAdd,
                   ),
                   ListTile(
                     leading: const Icon(Icons.arrow_upward),
                     title: const Text('Expense'),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      _open(context, kind: 'expense');
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.swap_horiz),
-                    title: const Text('Transfer'),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      _open(context, kind: 'transfer');
-                    },
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.credit_card),
-                    title: const Text('Credit card payment'),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      _open(context, kind: 'transfer', initialToCreditCard: true);
-                    },
+                    onTap: goToAdd,
                   ),
                 ],
               ),
@@ -735,23 +718,4 @@ class _AddTransactionFab extends StatelessWidget {
       label: const Text('Add transaction'),
     );
   }
-}
-
-String _formatMonthYear(DateTime date) {
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  final m = months[date.month - 1];
-  return '$m ${date.year}';
 }

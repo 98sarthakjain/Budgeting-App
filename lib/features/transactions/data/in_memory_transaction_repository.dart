@@ -16,6 +16,17 @@ class InMemoryTransactionRepository implements TransactionRepository {
   final StreamController<List<Transaction>> _controller =
       StreamController<List<Transaction>>.broadcast();
 
+  @override
+  Stream<void> watchAll() async* {
+    // Ensure listeners get an immediate tick so first-build UIs can compute
+    // derived values without waiting for the next write.
+    yield null;
+
+    await for (final _ in _controller.stream) {
+      yield null;
+    }
+  }
+
   InMemoryTransactionRepository();
 
   // ---------------------------------------------------------------------------
