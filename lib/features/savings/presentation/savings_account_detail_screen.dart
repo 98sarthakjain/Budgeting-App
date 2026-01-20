@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:budgeting_app/core/design/spacing.dart';
-import 'package:budgeting_app/core/design/app_theme.dart';
 import 'package:budgeting_app/core/widgets/app_card.dart';
 import 'package:budgeting_app/core/services/app_currency_service.dart';
 import 'package:budgeting_app/features/savings/domain/savings_account.dart';
@@ -12,11 +11,13 @@ import 'package:budgeting_app/features/savings/data/savings_account_repository.d
 
 class SavingsAccountDetailScreen extends StatelessWidget {
   final SavingsAccount account;
+  final SavingsAccountRepository repository;
   final TransactionRepository transactionRepository;
 
   const SavingsAccountDetailScreen({
     super.key,
     required this.account,
+    required this.repository,
     required this.transactionRepository,
   });
 
@@ -81,14 +82,13 @@ class SavingsAccountDetailScreen extends StatelessWidget {
                               builder: (_) => AddEditSavingsAccountScreen(
                                 repository: repository,
                                 transactionRepository: transactionRepository,
-                                existingAccount:
-                                    account, // or whatever your type is called
+                                initialAccount: account,
                               ),
                             ),
                           );
 
                           if (changed == true) {
-                            // no-op: your StreamBuilder/FutureBuilder will refresh automatically
+                            // no-op: the StreamBuilder will refresh automatically
                           }
                         },
                         icon: const Icon(Icons.edit_outlined, size: 18),

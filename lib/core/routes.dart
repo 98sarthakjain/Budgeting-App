@@ -46,6 +46,8 @@ final _transactionRepository = InMemoryTransactionRepository();
 
 /// Single in-memory card repository instance for credit cards.
 final _cardRepository = InMemoryCardRepository();
+/// Single in-memory savings account repository instance.
+final _savingsRepository = InMemorySavingsAccountRepository();
 
 class AppRoutes {
   // Core
@@ -110,13 +112,14 @@ final Map<String, WidgetBuilder> appRoutes = {
 
   // Savings
   AppRoutes.savingsAccounts: (_) => SavingsAccountsScreen(
-    repository: InMemorySavingsAccountRepository(),
+    repository: _savingsRepository,
     transactionRepository: _transactionRepository,
   ),
   AppRoutes.savingsAccountDetail: (context) {
     final account = ModalRoute.of(context)!.settings.arguments as dynamic;
     return SavingsAccountDetailScreen(
       account: account,
+      repository: _savingsRepository,
       transactionRepository: _transactionRepository,
     );
   },

@@ -169,8 +169,8 @@ class _SavingsAccountsScreenState extends State<SavingsAccountsScreen> {
                               MaterialPageRoute(
                                 builder: (_) => SavingsAccountDetailScreen(
                                   account: account,
-                                  transactionRepository:
-                                      widget.transactionRepository,
+                                  repository: widget.repository,
+                                  transactionRepository: widget.transactionRepository,
                                 ),
                               ),
                             );
