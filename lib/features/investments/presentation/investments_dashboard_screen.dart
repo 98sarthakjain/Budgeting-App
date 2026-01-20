@@ -31,7 +31,6 @@ class _InvestmentsDashboardScreenState
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final currency = AppCurrencyService.instance;
 
     return Scaffold(
       appBar: AppBar(
@@ -44,8 +43,9 @@ class _InvestmentsDashboardScreenState
           child: FutureBuilder<List<InvestmentAccount>>(
             future: _future,
             builder: (context, snap) {
-              if (!snap.hasData)
+              if (!snap.hasData) {
                 return const Center(child: CircularProgressIndicator());
+              }
               final items = snap.data!;
 
               final totalInvested = items.fold<double>(
@@ -106,10 +106,9 @@ class _PortfolioHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currency = AppCurrencyService.instance;
     final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-
+    final currency = AppCurrencyService.instance;
     final isGain = profitLoss >= 0;
 
     return AppCard(
@@ -125,7 +124,7 @@ class _PortfolioHeader extends StatelessWidget {
             Text(
               'Current Value',
               style: textTheme.bodyMedium?.copyWith(
-                color: scheme.onPrimary.withOpacity(0.9),
+                color: scheme.onPrimary.withAlpha(((0.9) * 255).round()),
               ),
             ),
             const SizedBox(height: 4),
@@ -202,7 +201,7 @@ class _CategoryGrid extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: scheme.surfaceVariant,
+                  color: scheme.surfaceContainerHighest,
                 ),
                 padding: const EdgeInsets.all(AppSpacing.md),
                 child: Icon(icon, color: scheme.primary, size: 26),

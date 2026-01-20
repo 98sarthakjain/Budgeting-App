@@ -211,7 +211,7 @@ class _CashAccountsScreenState extends State<CashAccountsScreen> {
                         style: textTheme.bodyMedium?.copyWith(
                           color: Theme.of(
                             context,
-                          ).colorScheme.onSurface.withOpacity(0.7),
+                          ).colorScheme.onSurface.withAlpha(((0.7) * 255).round()),
                         ),
                       ),
                     )
@@ -219,7 +219,7 @@ class _CashAccountsScreenState extends State<CashAccountsScreen> {
                     Expanded(
                       child: ListView.separated(
                         itemCount: wallets.length,
-                        separatorBuilder: (_, __) =>
+                        separatorBuilder: (_, _) =>
                             const SizedBox(height: AppSpacing.sm),
                         itemBuilder: (context, index) {
                           final wallet = wallets[index];
@@ -284,7 +284,7 @@ class _TotalCashCard extends StatelessWidget {
             Text(
               'Total cash & wallets',
               style: textTheme.bodyMedium?.copyWith(
-                color: scheme.onSecondaryContainer.withOpacity(0.9),
+                color: scheme.onSecondaryContainer.withAlpha(((0.9) * 255).round()),
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -387,7 +387,7 @@ class _Avatar extends StatelessWidget {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: scheme.surfaceVariant,
+        color: scheme.surfaceContainerHighest,
         shape: BoxShape.circle,
       ),
       child: Icon(icon, color: scheme.primary, size: 22),

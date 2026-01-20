@@ -157,7 +157,7 @@ class _SavingsAccountsScreenState extends State<SavingsAccountsScreen> {
                   Expanded(
                     child: ListView.separated(
                       itemCount: visibleAccounts.length,
-                      separatorBuilder: (_, __) =>
+                      separatorBuilder: (_, _) =>
                           const SizedBox(height: AppSpacing.sm),
                       itemBuilder: (context, index) {
                         final account = visibleAccounts[index];
@@ -169,8 +169,9 @@ class _SavingsAccountsScreenState extends State<SavingsAccountsScreen> {
                               MaterialPageRoute(
                                 builder: (_) => SavingsAccountDetailScreen(
                                   account: account,
+                                  transactionRepository:
+                                      widget.transactionRepository,
                                   repository: widget.repository,
-                                  transactionRepository: widget.transactionRepository,
                                 ),
                               ),
                             );
@@ -221,7 +222,7 @@ class _TotalBalanceCard extends StatelessWidget {
               Text(
                 'Total savings',
                 style: textTheme.bodyMedium?.copyWith(
-                  color: scheme.onPrimary.withOpacity(0.9),
+                  color: scheme.onPrimary.withAlpha(((0.9) * 255).round()),
                 ),
               ),
               const SizedBox(height: AppSpacing.xs),
@@ -242,7 +243,7 @@ class _TotalBalanceCard extends StatelessWidget {
                     Text(
                       'Calculating…',
                       style: textTheme.bodyMedium?.copyWith(
-                        color: scheme.onPrimary.withOpacity(0.9),
+                        color: scheme.onPrimary.withAlpha(((0.9) * 255).round()),
                       ),
                     ),
                   ],
@@ -324,7 +325,7 @@ class _SavingsAccountTile extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: scheme.primary.withOpacity(0.08),
+                  color: scheme.primary.withAlpha(((0.08) * 255).round()),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -350,7 +351,7 @@ class _SavingsAccountTile extends StatelessWidget {
                     Text(
                       '${account.bankName} • ${account.maskedAccountNumber}',
                       style: textTheme.bodySmall?.copyWith(
-                        color: scheme.onSurface.withOpacity(0.7),
+                        color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -422,7 +423,7 @@ class _SavingsAccountTile extends StatelessWidget {
                       Text(
                         'Available',
                         style: textTheme.bodySmall?.copyWith(
-                          color: scheme.onSurface.withOpacity(0.6),
+                          color: scheme.onSurface.withAlpha(((0.6) * 255).round()),
                         ),
                       ),
                     ],
@@ -453,7 +454,7 @@ class _Pill extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: scheme.primary.withOpacity(0.08),
+        color: scheme.primary.withAlpha(((0.08) * 255).round()),
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Text(

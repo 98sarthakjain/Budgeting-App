@@ -11,14 +11,14 @@ import 'package:budgeting_app/features/savings/data/savings_account_repository.d
 
 class SavingsAccountDetailScreen extends StatelessWidget {
   final SavingsAccount account;
-  final SavingsAccountRepository repository;
   final TransactionRepository transactionRepository;
+  final SavingsAccountRepository repository;
 
   const SavingsAccountDetailScreen({
     super.key,
     required this.account,
-    required this.repository,
     required this.transactionRepository,
+    required this.repository,
   });
 
   @override
@@ -26,6 +26,8 @@ class SavingsAccountDetailScreen extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final currency = AppCurrencyService.instance;
+
+    final repository = this.repository;
 
     return Scaffold(
       appBar: AppBar(
@@ -77,18 +79,20 @@ class SavingsAccountDetailScreen extends StatelessWidget {
                           ),
                         ),
                         onPressed: () async {
-                          final changed = await Navigator.of(context).push<bool>(
-                            MaterialPageRoute(
-                              builder: (_) => AddEditSavingsAccountScreen(
-                                repository: repository,
-                                transactionRepository: transactionRepository,
-                                initialAccount: account,
-                              ),
-                            ),
-                          );
+                          final changed = await Navigator.of(context)
+                              .push<bool>(
+                                MaterialPageRoute(
+                                  builder: (_) => AddEditSavingsAccountScreen(
+                                    repository: repository,
+                                    transactionRepository:
+                                        transactionRepository,
+                                    initialAccount: account,
+                                  ),
+                                ),
+                              );
 
                           if (changed == true) {
-                            // no-op: the StreamBuilder will refresh automatically
+                            // no-op: your StreamBuilder/FutureBuilder will refresh automatically
                           }
                         },
                         icon: const Icon(Icons.edit_outlined, size: 18),
@@ -163,7 +167,9 @@ class SavingsAccountDetailScreen extends StatelessWidget {
                             Text(
                               'Loading transactions…',
                               style: textTheme.bodyMedium?.copyWith(
-                                color: scheme.onSurface.withOpacity(0.7),
+                                color: scheme.onSurface.withAlpha(
+                                  ((0.7) * 255).round(),
+                                ),
                               ),
                             ),
                           ],
@@ -180,7 +186,9 @@ class SavingsAccountDetailScreen extends StatelessWidget {
                         child: Text(
                           'No transactions yet',
                           style: textTheme.bodyMedium?.copyWith(
-                            color: scheme.onSurface.withOpacity(0.7),
+                            color: scheme.onSurface.withAlpha(
+                              ((0.7) * 255).round(),
+                            ),
                           ),
                         ),
                       ),
@@ -230,7 +238,7 @@ class _HeaderCard extends StatelessWidget {
             Text(
               '${account.bankName} • ${account.maskedAccountNumber}',
               style: textTheme.bodySmall?.copyWith(
-                color: scheme.onPrimary.withOpacity(0.9),
+                color: scheme.onPrimary.withAlpha(((0.9) * 255).round()),
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -278,7 +286,7 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               label,
               style: textTheme.bodySmall?.copyWith(
-                color: scheme.onSurface.withOpacity(0.7),
+                color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
               ),
             ),
           ),
@@ -305,7 +313,7 @@ class _Pill extends StatelessWidget {
         vertical: AppSpacing.xs,
       ),
       decoration: BoxDecoration(
-        color: scheme.onPrimary.withOpacity(0.18),
+        color: scheme.onPrimary.withAlpha(((0.18) * 255).round()),
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Text(
@@ -357,14 +365,14 @@ class _TxTile extends StatelessWidget {
       ),
       leading: CircleAvatar(
         radius: 18,
-        backgroundColor: scheme.surfaceVariant,
+        backgroundColor: scheme.surfaceContainerHighest,
         child: Icon(_iconForType(txn.type), size: 20, color: scheme.primary),
       ),
       title: Text(description, style: textTheme.bodyLarge),
       subtitle: Text(
         subtitle,
         style: textTheme.bodyMedium?.copyWith(
-          color: scheme.onSurface.withOpacity(0.7),
+          color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
         ),
       ),
       trailing: Text(

@@ -50,7 +50,7 @@ class InsuranceDetailScreen extends StatelessWidget {
                       Text(
                         policy.insurerName,
                         style: textTheme.bodySmall?.copyWith(
-                          color: scheme.onPrimary.withOpacity(0.9),
+                          color: scheme.onPrimary.withAlpha(((0.9) * 255).round()),
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -136,7 +136,7 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               label,
               style: textTheme.bodySmall?.copyWith(
-                color: scheme.onSurface.withOpacity(0.7),
+                color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
               ),
             ),
           ),

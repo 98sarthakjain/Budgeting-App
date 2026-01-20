@@ -86,7 +86,7 @@ class CashAccountDetailScreen extends StatelessWidget {
                   Text(
                     'Ledger balance',
                     style: textTheme.bodySmall?.copyWith(
-                      color: scheme.onSurface.withOpacity(0.7),
+                      color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.lg),
@@ -136,7 +136,7 @@ class CashAccountDetailScreen extends StatelessWidget {
                         child: Text(
                           'No transactions yet.',
                           style: textTheme.bodyMedium?.copyWith(
-                            color: scheme.onSurface.withOpacity(0.7),
+                            color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
                           ),
                         ),
                       ),
@@ -147,7 +147,7 @@ class CashAccountDetailScreen extends StatelessWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: txns.length,
-                        separatorBuilder: (_, __) =>
+                        separatorBuilder: (_, _) =>
                             const Divider(height: 1, thickness: 0.5),
                         itemBuilder: (context, index) {
                           final t = txns[index];
@@ -189,7 +189,7 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               label,
               style: textTheme.bodySmall?.copyWith(
-                color: scheme.onSurface.withOpacity(0.7),
+                color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
               ),
             ),
           ),
@@ -268,7 +268,7 @@ class _TransactionTile extends StatelessWidget {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: scheme.surfaceVariant,
+              color: scheme.surfaceContainerHighest,
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -294,7 +294,7 @@ class _TransactionTile extends StatelessWidget {
                 Text(
                   '$dateStr · $_typeLabel',
                   style: textTheme.bodySmall?.copyWith(
-                    color: scheme.onSurface.withOpacity(0.7),
+                    color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
                   ),
                 ),
               ],

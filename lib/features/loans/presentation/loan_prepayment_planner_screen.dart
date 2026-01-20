@@ -95,7 +95,7 @@ class _LoanPrepaymentPlannerScreenState
               Text(
                 '${loan.bankName} • ${loan.maskedAccountNumber}',
                 style: textTheme.bodySmall?.copyWith(
-                  color: scheme.onSurface.withOpacity(0.7),
+                  color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
@@ -194,7 +194,7 @@ class _LoanPrepaymentPlannerScreenState
                         'New principal after prepayment: '
                         '${currency.format(newPrincipal)}',
                         style: textTheme.bodySmall?.copyWith(
-                          color: scheme.onSurface.withOpacity(0.7),
+                          color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
                         ),
                       ),
                     ],
@@ -318,7 +318,7 @@ class _InlineInfoRow extends StatelessWidget {
             child: Text(
               label,
               style: textTheme.bodySmall?.copyWith(
-                color: scheme.onSurface.withOpacity(0.7),
+                color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
               ),
             ),
           ),

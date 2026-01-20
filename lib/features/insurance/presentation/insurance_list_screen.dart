@@ -56,7 +56,7 @@ class _InsuranceListScreenState extends State<InsuranceListScreen> {
 
               return ListView.separated(
                 itemCount: policies.length,
-                separatorBuilder: (_, __) =>
+                separatorBuilder: (_, _) =>
                     const SizedBox(height: AppSpacing.md),
                 itemBuilder: (context, i) {
                   final p = policies[i];
@@ -156,7 +156,7 @@ class _PolicyIcon extends StatelessWidget {
 
     return CircleAvatar(
       radius: 20,
-      backgroundColor: scheme.surfaceVariant,
+      backgroundColor: scheme.surfaceContainerHighest,
       child: Icon(icon, color: scheme.primary),
     );
   }

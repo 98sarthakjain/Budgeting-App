@@ -65,9 +65,9 @@ class AppTheme {
         elevation: 0,
         centerTitle: false,
         titleTextStyle: base.textTheme.titleMedium?.copyWith(
-          color: lightColorScheme.onBackground,
+          color: lightColorScheme.onSurface,
         ),
-        iconTheme: IconThemeData(color: lightColorScheme.onBackground),
+        iconTheme: IconThemeData(color: lightColorScheme.onSurface),
       ),
       cardTheme: CardThemeData(
         margin: EdgeInsets.zero,

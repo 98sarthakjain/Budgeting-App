@@ -48,13 +48,14 @@ class _InvestmentCategoryScreenState extends State<InvestmentCategoryScreen> {
           child: FutureBuilder<List<InvestmentAccount>>(
             future: _future,
             builder: (context, snap) {
-              if (!snap.hasData)
+              if (!snap.hasData) {
                 return const Center(child: CircularProgressIndicator());
+              }
               final items = snap.data!;
 
               return ListView.separated(
                 itemCount: items.length,
-                separatorBuilder: (_, __) =>
+                separatorBuilder: (_, _) =>
                     const SizedBox(height: AppSpacing.md),
                 itemBuilder: (context, i) {
                   final item = items[i];

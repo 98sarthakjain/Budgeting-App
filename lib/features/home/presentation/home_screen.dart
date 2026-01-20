@@ -201,7 +201,7 @@ class _BalanceCard extends StatelessWidget {
           Text(
             'Available balance',
             style: textTheme.bodyMedium?.copyWith(
-              color: scheme.onPrimary.withOpacity(0.9),
+              color: scheme.onPrimary.withAlpha(((0.9) * 255).round()),
             ),
           ),
           const SizedBox(height: 4),
@@ -216,7 +216,7 @@ class _BalanceCard extends StatelessWidget {
           Text(
             'FY 2025–26',
             style: textTheme.bodyMedium?.copyWith(
-              color: scheme.onPrimary.withOpacity(0.85),
+              color: scheme.onPrimary.withAlpha(((0.85) * 255).round()),
             ),
           ),
         ],
@@ -298,9 +298,9 @@ class _SummaryCard extends StatelessWidget {
       fg = scheme.onSecondaryContainer;
     } else {
       // Softer "warning" tone instead of harsh red
-      bg = scheme.errorContainer.withOpacity(0.2);
-      borderColor = scheme.error.withOpacity(0.6);
-      fg = scheme.onErrorContainer.withOpacity(0.9);
+      bg = scheme.errorContainer.withAlpha(((0.2) * 255).round());
+      borderColor = scheme.error.withAlpha(((0.6) * 255).round());
+      fg = scheme.onErrorContainer.withAlpha(((0.9) * 255).round());
     }
 
     return Container(
@@ -308,7 +308,7 @@ class _SummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: borderColor.withOpacity(0.5), width: 1),
+        border: Border.all(color: borderColor.withAlpha(((0.5) * 255).round()), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,12 +325,12 @@ class _SummaryCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             'Till date',
-            style: textTheme.bodyMedium?.copyWith(color: fg.withOpacity(0.85)),
+            style: textTheme.bodyMedium?.copyWith(color: fg.withAlpha(((0.85) * 255).round())),
           ),
           const SizedBox(height: 4),
           Text(
             '${currency.format(monthAmount)} • April 2025',
-            style: textTheme.bodyMedium?.copyWith(color: fg.withOpacity(0.8)),
+            style: textTheme.bodyMedium?.copyWith(color: fg.withAlpha(((0.8) * 255).round())),
           ),
         ],
       ),
@@ -340,13 +340,9 @@ class _SummaryCard extends StatelessWidget {
 
 class _SectionHeader extends StatelessWidget {
   final String title;
-  final String? actionLabel;
-  final VoidCallback? onActionTap;
 
   const _SectionHeader({
     required this.title,
-    this.actionLabel,
-    this.onActionTap,
   });
 
   @override
@@ -357,23 +353,11 @@ class _SectionHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(title, style: textTheme.titleMedium),
-        if (actionLabel != null &&
-            actionLabel!.isNotEmpty &&
-            onActionTap != null)
-          GestureDetector(
-            onTap: onActionTap,
-            child: Text(
-              actionLabel!,
-              style: textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
       ],
     );
   }
 }
+
 
 class _Category {
   final IconData icon;
@@ -413,7 +397,7 @@ class _CategoriesGrid extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: scheme.surfaceVariant,
+                  color: scheme.surfaceContainerHighest,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(c.icon, size: 24, color: scheme.primary),
@@ -464,7 +448,7 @@ class _RecentTile extends StatelessWidget {
       ),
       leading: CircleAvatar(
         radius: 18,
-        backgroundColor: scheme.surfaceVariant,
+        backgroundColor: scheme.surfaceContainerHighest,
         child: Icon(icon, size: 20, color: scheme.primary),
       ),
       title: Text(title, style: textTheme.bodyLarge),
@@ -474,13 +458,13 @@ class _RecentTile extends StatelessWidget {
           Text(
             category,
             style: textTheme.bodyMedium?.copyWith(
-              color: scheme.onSurface.withOpacity(0.75),
+              color: scheme.onSurface.withAlpha(((0.75) * 255).round()),
             ),
           ),
           Text(
             'Paid via $paidVia',
             style: textTheme.bodyMedium?.copyWith(
-              color: scheme.onSurface.withOpacity(0.6),
+              color: scheme.onSurface.withAlpha(((0.6) * 255).round()),
             ),
           ),
         ],

@@ -46,8 +46,12 @@ final _transactionRepository = InMemoryTransactionRepository();
 
 /// Single in-memory card repository instance for credit cards.
 final _cardRepository = InMemoryCardRepository();
-/// Single in-memory savings account repository instance.
+
+/// Single in-memory savings account repository instance used across the app.
 final _savingsRepository = InMemorySavingsAccountRepository();
+
+/// Single in-memory cash account repository instance used across the app.
+final _cashRepository = InMemoryCashAccountRepository();
 
 class AppRoutes {
   // Core
@@ -126,7 +130,7 @@ final Map<String, WidgetBuilder> appRoutes = {
 
   // Cash
   AppRoutes.cashAccounts: (_) => CashAccountsScreen(
-    repository: InMemoryCashAccountRepository(),
+    repository: _cashRepository,
     transactionRepository: _transactionRepository,
   ),
   AppRoutes.cashAccountDetail: (context) {

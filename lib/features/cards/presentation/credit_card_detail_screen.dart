@@ -122,7 +122,7 @@ class CreditCardDetailScreen extends StatelessWidget {
                 style: textTheme.bodyMedium?.copyWith(
                   letterSpacing: 1.4,
                   fontWeight: FontWeight.w600,
-                  color: scheme.onSurface.withOpacity(0.6),
+                  color: scheme.onSurface.withAlpha(((0.6) * 255).round()),
                 ),
               ),
               const SizedBox(height: AppSpacing.sm),
@@ -201,7 +201,7 @@ class _CardHeader extends StatelessWidget {
             Text(
               card.bankName,
               style: textTheme.bodyMedium?.copyWith(
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withAlpha(((0.9) * 255).round()),
               ),
             ),
             const SizedBox(height: 2),
@@ -225,7 +225,7 @@ class _CardHeader extends StatelessWidget {
                   card.holderName.toUpperCase(),
                   style: textTheme.bodyMedium?.copyWith(
                     letterSpacing: 1.5,
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withAlpha(((0.9) * 255).round()),
                   ),
                 ),
               ],
@@ -264,7 +264,7 @@ class _SpendSummaryCard extends StatelessWidget {
           BoxShadow(
             blurRadius: 12,
             offset: const Offset(0, 6),
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withAlpha(((0.04) * 255).round()),
           ),
         ],
       ),
@@ -303,7 +303,7 @@ class _SpendSummaryCard extends StatelessWidget {
               Text(
                 dateRange,
                 style: textTheme.bodyMedium?.copyWith(
-                  color: scheme.onSurface.withOpacity(0.7),
+                  color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
                 ),
               ),
             ],
@@ -372,7 +372,7 @@ class _TxTile extends StatelessWidget {
       subtitle: Text(
         '${item.subtitle}  •  ${item.dateLabel}',
         style: textTheme.bodyMedium?.copyWith(
-          color: scheme.onSurface.withOpacity(0.7),
+          color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
         ),
       ),
       trailing: Text(

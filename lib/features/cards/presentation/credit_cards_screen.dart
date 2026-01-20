@@ -106,7 +106,7 @@ class _CreditCardsScreenState extends State<CreditCardsScreen> {
                       top: AppSpacing.sm,
                     ),
                     itemCount: cards.length,
-                    separatorBuilder: (_, __) =>
+                    separatorBuilder: (_, _) =>
                         const SizedBox(height: AppSpacing.lg),
                     itemBuilder: (context, index) {
                       final card = cards[index];
@@ -212,7 +212,7 @@ class _Header extends StatelessWidget {
                   style: textTheme.bodyMedium?.copyWith(
                     letterSpacing: 1.4,
                     fontWeight: FontWeight.w600,
-                    color: scheme.onSurface.withOpacity(0.6),
+                    color: scheme.onSurface.withAlpha(((0.6) * 255).round()),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -232,7 +232,7 @@ class _Header extends StatelessWidget {
                 Text(
                   'Statement due for ${cards.length} card${cards.length == 1 ? '' : 's'}',
                   style: textTheme.bodyMedium?.copyWith(
-                    color: scheme.onSurface.withOpacity(0.6),
+                    color: scheme.onSurface.withAlpha(((0.6) * 255).round()),
                   ),
                 ),
               ],
@@ -321,7 +321,7 @@ class _CreditCardTile extends StatelessWidget {
                           Text(
                             card.bankName,
                             style: textTheme.bodyMedium?.copyWith(
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withAlpha(((0.9) * 255).round()),
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -345,7 +345,7 @@ class _CreditCardTile extends StatelessWidget {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.25),
+                                    color: Colors.black.withAlpha(((0.25) * 255).round()),
                                     borderRadius: BorderRadius.circular(999),
                                   ),
                                   child: Text(
@@ -387,7 +387,7 @@ class _CreditCardTile extends StatelessWidget {
                             Text(
                               'DUE DAY ${card.dueDay.toString().padLeft(2, '0')}',
                               style: textTheme.bodySmall?.copyWith(
-                                color: Colors.white.withOpacity(0.8),
+                                color: Colors.white.withAlpha(((0.8) * 255).round()),
                                 letterSpacing: 0.5,
                               ),
                             ),
@@ -395,7 +395,7 @@ class _CreditCardTile extends StatelessWidget {
                             FilledButton(
                               style: FilledButton.styleFrom(
                                 backgroundColor: card.isClosed
-                                    ? Colors.white.withOpacity(0.35)
+                                    ? Colors.white.withAlpha(((0.35) * 255).round())
                                     : Colors.white,
                                 foregroundColor: Colors.black,
                                 padding: const EdgeInsets.symmetric(
@@ -454,7 +454,7 @@ class _CreditCardTile extends StatelessWidget {
                       card.holderName.toUpperCase(),
                       style: textTheme.bodyMedium?.copyWith(
                         letterSpacing: 1.5,
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withAlpha(((0.9) * 255).round()),
                       ),
                     ),
                   ],
@@ -471,7 +471,7 @@ class _CreditCardTile extends StatelessWidget {
               child: TextButton(
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: Colors.black.withOpacity(0.15),
+                  backgroundColor: Colors.black.withAlpha(((0.15) * 255).round()),
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                     vertical: AppSpacing.xs,

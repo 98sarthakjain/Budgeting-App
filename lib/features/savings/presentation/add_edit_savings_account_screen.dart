@@ -17,11 +17,11 @@ class AddEditSavingsAccountScreen extends StatefulWidget {
   final SavingsAccount? initialAccount;
 
   const AddEditSavingsAccountScreen({
-    Key? key,
+    super.key,
     required this.repository,
     required this.transactionRepository,
     this.initialAccount,
-  }) : super(key: key);
+  });
 
   bool get isEditMode => initialAccount != null;
 
@@ -207,6 +207,8 @@ class _AddEditSavingsAccountScreenState
       accountId: accountId,
     );
 
+    if (!mounted) return;
+
     // -----------------------------------------------------------------
     // CASE A — No transactions: allow hard delete
     // -----------------------------------------------------------------
@@ -246,6 +248,8 @@ class _AddEditSavingsAccountScreenState
     final ledgerBalance = await widget.transactionRepository.computeBalance(
       accountId: accountId,
     );
+
+    if (!mounted) return;
     const epsilon = 0.01;
 
     if (ledgerBalance.abs() > epsilon) {
@@ -403,7 +407,7 @@ class _AddEditSavingsAccountScreenState
 
                         // Account type
                         DropdownButtonFormField<String>(
-                          value: _selectedAccountType,
+                          initialValue: _selectedAccountType,
                           items: _accountTypes
                               .map(
                                 (type) => DropdownMenuItem<String>(
@@ -621,7 +625,7 @@ class _BankPickerSheetState extends State<_BankPickerSheet> {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: _filteredBanks.length,
-                separatorBuilder: (_, __) => const Divider(height: 1),
+                separatorBuilder: (_, _) => const Divider(height: 1),
                 itemBuilder: (context, index) {
                   final bank = _filteredBanks[index];
                   final isSelected = bank == widget.initialSelection;

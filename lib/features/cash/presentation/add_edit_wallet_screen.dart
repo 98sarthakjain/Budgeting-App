@@ -17,11 +17,11 @@ class AddEditWalletScreen extends StatefulWidget {
   final CashAccount? initialWallet;
 
   const AddEditWalletScreen({
-    Key? key,
+    super.key,
     required this.repository,
     required this.transactionRepository,
     this.initialWallet,
-  }) : super(key: key);
+  });
 
   bool get isEditMode => initialWallet != null;
 
@@ -142,6 +142,8 @@ class _AddEditWalletScreenState extends State<AddEditWalletScreen> {
       final txns = await widget.transactionRepository.getByAccount(
         accountId: wallet.id,
       );
+
+      if (!mounted) return;
 
       if (txns.isEmpty) {
         // Wallet has no history → user can either close or hard-delete

@@ -69,7 +69,7 @@ class _LoanAccountsScreenState extends State<LoanAccountsScreen> {
                   Expanded(
                     child: ListView.separated(
                       itemCount: loans.length,
-                      separatorBuilder: (_, __) =>
+                      separatorBuilder: (_, _) =>
                           const SizedBox(height: AppSpacing.sm),
                       itemBuilder: (context, index) {
                         final loan = loans[index];
@@ -108,7 +108,7 @@ class _LoanAccountsScreenState extends State<LoanAccountsScreen> {
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .onSurface
-                                                .withOpacity(0.7),
+                                                .withAlpha(((0.7) * 255).round()),
                                           ),
                                         ),
                                         const SizedBox(height: AppSpacing.xs),
@@ -118,7 +118,7 @@ class _LoanAccountsScreenState extends State<LoanAccountsScreen> {
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .onSurface
-                                                .withOpacity(0.7),
+                                                .withAlpha(((0.7) * 255).round()),
                                           ),
                                         ),
                                       ],
@@ -143,7 +143,7 @@ class _LoanAccountsScreenState extends State<LoanAccountsScreen> {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .onSurface
-                                              .withOpacity(0.7),
+                                              .withAlpha(((0.7) * 255).round()),
                                         ),
                                       ),
                                     ],
@@ -182,7 +182,7 @@ class _TotalOutstandingCard extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: scheme.errorContainer.withOpacity(0.35),
+          color: scheme.errorContainer.withAlpha(((0.35) * 255).round()),
           borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
@@ -191,7 +191,7 @@ class _TotalOutstandingCard extends StatelessWidget {
             Text(
               'Total loan outstanding',
               style: textTheme.bodyMedium?.copyWith(
-                color: scheme.onErrorContainer.withOpacity(0.9),
+                color: scheme.onErrorContainer.withAlpha(((0.9) * 255).round()),
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
@@ -234,7 +234,7 @@ class _LoanAvatar extends StatelessWidget {
       width: 40,
       height: 40,
       decoration: BoxDecoration(
-        color: scheme.surfaceVariant,
+        color: scheme.surfaceContainerHighest,
         shape: BoxShape.circle,
       ),
       child: Icon(icon, color: scheme.primary, size: 22),

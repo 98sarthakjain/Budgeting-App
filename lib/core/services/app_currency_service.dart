@@ -60,7 +60,7 @@ class AppCurrencyService extends ChangeNotifier {
   String formatBase(double amount, {bool withCode = false}) {
     final decimals = (_baseCode == _jpy) ? 0 : 2;
     final fixed = amount.toStringAsFixed(decimals);
-    final result = '${baseSymbol} $fixed';
+    final result = '$baseSymbol $fixed';
     return withCode ? '$result $baseCode' : result;
   }
 

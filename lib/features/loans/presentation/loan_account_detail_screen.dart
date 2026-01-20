@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:budgeting_app/core/design/spacing.dart';
-import 'package:budgeting_app/core/design/app_theme.dart';
 import 'package:budgeting_app/core/widgets/app_card.dart';
 import 'package:budgeting_app/core/services/app_currency_service.dart';
 import 'package:budgeting_app/features/loans/domain/loan_account.dart';
@@ -15,12 +14,10 @@ class LoanAccountDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
     final currency = AppCurrencyService.instance;
-
     final outstandingText = currency.format(loan.outstandingPrincipal);
 
-    // Dummy EMI history for now
+    // Dummy EMI history for
     final recentEmis = [
       _EmiItem(
         label: 'EMI paid',
@@ -179,17 +176,16 @@ class _LoanHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final currency = AppCurrencyService.instance;
-
+    final scheme = Theme.of(context).colorScheme;
     return AppCard(
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(AppSpacing.lg),
         decoration: BoxDecoration(
-          color: scheme.surfaceVariant,
-          borderRadius: BorderRadius.circular(24),
+          color: scheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(AppRadius.pill),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,7 +200,7 @@ class _LoanHeaderCard extends StatelessWidget {
             Text(
               '${loan.bankName} • ${loan.maskedAccountNumber}',
               style: textTheme.bodySmall?.copyWith(
-                color: scheme.onSurface.withOpacity(0.7),
+                color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -218,7 +214,7 @@ class _LoanHeaderCard extends StatelessWidget {
                 Text(
                   '${loan.remainingTenureMonths} months left',
                   style: textTheme.bodyMedium?.copyWith(
-                    color: scheme.onSurface.withOpacity(0.7),
+                    color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
                   ),
                 ),
               ],
@@ -240,7 +236,6 @@ class _DetailRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
       child: Row(
@@ -249,7 +244,7 @@ class _DetailRow extends StatelessWidget {
             child: Text(
               label,
               style: textTheme.bodySmall?.copyWith(
-                color: scheme.onSurface.withOpacity(0.7),
+                color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
               ),
             ),
           ),
@@ -280,9 +275,8 @@ class _EmiTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
     final currency = AppCurrencyService.instance;
-
+    final scheme = Theme.of(context).colorScheme;
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 0,
@@ -290,14 +284,14 @@ class _EmiTile extends StatelessWidget {
       ),
       leading: CircleAvatar(
         radius: 18,
-        backgroundColor: scheme.surfaceVariant,
+        backgroundColor: scheme.surfaceContainerHighest,
         child: Icon(Icons.currency_rupee, size: 18, color: scheme.primary),
       ),
       title: Text(item.label, style: textTheme.bodyLarge),
       subtitle: Text(
         item.dateLabel,
         style: textTheme.bodyMedium?.copyWith(
-          color: scheme.onSurface.withOpacity(0.7),
+          color: scheme.onSurface.withAlpha(((0.7) * 255).round()),
         ),
       ),
       trailing: Text(

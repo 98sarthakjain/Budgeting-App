@@ -9,7 +9,6 @@ import 'package:budgeting_app/core/services/ledger_transaction_store.dart';
 import 'package:budgeting_app/features/savings/domain/account.dart'; // ⬅️ add this
 import 'package:budgeting_app/features/cards/domain/credit_card.dart'; // ⬅️ and this
 
-import '../domain/transaction.dart'; // existing Hive Transaction model (not used yet)
 import '../data/transaction_repository.dart'; // keep constructor compatible
 
 import '../domain/ledger_entry.dart';
@@ -250,7 +249,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           )
         else
           DropdownButtonFormField<String>(
-            value: _selectedExpenseSourceId,
+            initialValue: _selectedExpenseSourceId,
             decoration: const InputDecoration(labelText: 'From'),
             items: [
               for (final s in sources)
@@ -294,7 +293,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
           )
         else
           DropdownButtonFormField<String>(
-            value: _selectedIncomeAccountId,
+            initialValue: _selectedIncomeAccountId,
             decoration: const InputDecoration(labelText: 'Account'),
             items: [
               for (final a in allAccounts)

@@ -1,8 +1,8 @@
 // lib/features/accounts/domain/account.dart
 
-/// Generic account used by AccountStore + transactions:
-/// - type: savings / cash
-/// - balance: current account balance
+// Generic account used by AccountStore + transactions:
+// - type: savings / cash
+// - balance: current account balance
 
 enum AccountType { savings, cash }
 
