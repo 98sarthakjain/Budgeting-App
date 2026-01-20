@@ -1,5 +1,6 @@
 // lib/features/cards/presentation/add_card_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:budgeting_app/core/widgets/app_card.dart';
 import 'package:budgeting_app/core/design/spacing.dart';
@@ -9,8 +10,7 @@ import 'package:budgeting_app/features/transactions/data/transaction_repository.
 
 class AddCardScreen extends StatefulWidget {
   final CardRepository repository;
-  final TransactionRepository
-  transactionRepository; // reserved for future flows
+  final TransactionRepository transactionRepository; // reserved for future flows
 
   const AddCardScreen({
     super.key,
@@ -23,11 +23,29 @@ class AddCardScreen extends StatefulWidget {
 }
 
 class _AddCardScreenState extends State<AddCardScreen> {
+  static const List<String> _knownBanks = [
+    'HDFC Bank',
+    'ICICI Bank',
+    'Axis Bank',
+    'SBI',
+    'Kotak Mahindra Bank',
+    'IndusInd Bank',
+    'Yes Bank',
+    'IDFC FIRST Bank',
+    'Federal Bank',
+    'RBL Bank',
+    'HSBC',
+    'Standard Chartered',
+    'AU Small Finance Bank',
+    'Other',
+  ];
+
   final _formKey = GlobalKey<FormState>();
 
   final _nicknameCtrl = TextEditingController();
   final _holderCtrl = TextEditingController();
   final _bankCtrl = TextEditingController();
+  final _last4Ctrl = TextEditingController();
   final _limitCtrl = TextEditingController();
   final _billingDayCtrl = TextEditingController(text: '10');
   final _dueDayCtrl = TextEditingController(text: '20');
@@ -39,6 +57,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
     _nicknameCtrl.dispose();
     _holderCtrl.dispose();
     _bankCtrl.dispose();
+    _last4Ctrl.dispose();
     _limitCtrl.dispose();
     _billingDayCtrl.dispose();
     _dueDayCtrl.dispose();
@@ -49,6 +68,14 @@ class _AddCardScreenState extends State<AddCardScreen> {
 
   Future<void> _save() async {
     if (_formKey.currentState?.validate() != true) return;
+
+    final last4 = _last4Ctrl.text.trim();
+
+    final faces = <CardFace>[];
+    if (last4.isNotEmpty) {
+      // Store the last-4 as the primary face so we can disambiguate cards later.
+      faces.add(CardFace(id: 'primary', scheme: 'Card', last4: last4));
+    }
 
     final card = CreditCard(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -64,7 +91,7 @@ class _AddCardScreenState extends State<AddCardScreen> {
           ? 0.0
           : double.parse(_annualFeeCtrl.text.trim()),
       cashbackSummary: _cashbackCtrl.text.trim(),
-      faces: const [], // we can add real faces later
+      faces: faces,
     );
 
     await widget.repository.upsertCard(card);
@@ -116,16 +143,42 @@ class _AddCardScreenState extends State<AddCardScreen> {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.md),
-                  TextFormField(
-                    controller: _bankCtrl,
+                  DropdownButtonFormField<String>(
+                    value: _knownBanks.contains(_bankCtrl.text) ? _bankCtrl.text : null,
+                    items: _knownBanks
+                        .map((b) => DropdownMenuItem<String>(value: b, child: Text(b)))
+                        .toList(growable: false),
+                    onChanged: (v) {
+                      if (v == null) return;
+                      setState(() {
+                        _bankCtrl.text = v;
+                      });
+                    },
                     decoration: const InputDecoration(
                       labelText: 'Bank',
-                      hintText: 'HDFC Bank, ICICI Bank, Axis Bank...',
+                    ),
+                    validator: (_) {
+                      if (_bankCtrl.text.trim().isEmpty) {
+                        return 'Please select a bank';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+                  TextFormField(
+                    controller: _last4Ctrl,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    maxLength: 4,
+                    decoration: const InputDecoration(
+                      labelText: 'Card number (last 4)',
+                      hintText: '1234',
+                      counterText: '',
                     ),
                     validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter bank name';
-                      }
+                      final v = (value ?? '').trim();
+                      if (v.isEmpty) return null; // optional
+                      if (v.length != 4) return 'Enter 4 digits';
                       return null;
                     },
                   ),

@@ -47,10 +47,10 @@ final _transactionRepository = InMemoryTransactionRepository();
 /// Single in-memory card repository instance for credit cards.
 final _cardRepository = InMemoryCardRepository();
 
-/// Single in-memory savings account repository instance used across the app.
+/// Single in-memory savings repository instance.
 final _savingsRepository = InMemorySavingsAccountRepository();
 
-/// Single in-memory cash account repository instance used across the app.
+/// Single in-memory cash repository instance.
 final _cashRepository = InMemoryCashAccountRepository();
 
 class AppRoutes {
@@ -90,10 +90,20 @@ class AppRoutes {
 /// Global routes map used by MaterialApp.routes
 final Map<String, WidgetBuilder> appRoutes = {
   // Home
-  AppRoutes.home: (_) => const HomeScreen(),
+  AppRoutes.home: (_) => HomeScreen(
+        transactionRepository: _transactionRepository,
+        savingsRepository: _savingsRepository,
+        cashRepository: _cashRepository,
+        cardRepository: _cardRepository,
+      ),
 
   // Transactions
-  AppRoutes.addTransaction: (_) => const AddTransactionScreen(),
+  AppRoutes.addTransaction: (_) => AddTransactionScreen(
+        transactionRepository: _transactionRepository,
+        savingsRepository: _savingsRepository,
+        cashRepository: _cashRepository,
+        cardRepository: _cardRepository,
+      ),
 
   // Credit Cards
   AppRoutes.addCard: (_) => AddCardScreen(

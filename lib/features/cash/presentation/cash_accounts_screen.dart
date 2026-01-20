@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:budgeting_app/core/design/spacing.dart';
@@ -41,6 +43,16 @@ class _CashAccountsScreenState extends State<CashAccountsScreen> {
     return _CashData(accounts: accounts, cash: cash);
   }
 
+  Future<double> _computeOpenTotalLedger(List<CashAccount> accounts) async {
+    double total = 0;
+    for (final a in accounts) {
+      if (a.isClosed) continue;
+      total += await widget.transactionRepository.computeBalance(accountId: a.id);
+    }
+    return total;
+  }
+
+
   Future<void> _refresh() async {
     setState(() {
       _future = _load();
@@ -60,6 +72,7 @@ class _CashAccountsScreenState extends State<CashAccountsScreen> {
     if (changed == true) {
       await _refresh();
     }
+
   }
 
   Future<void> _onEditWallet(CashAccount wallet) async {
@@ -138,16 +151,18 @@ class _CashAccountsScreenState extends State<CashAccountsScreen> {
                   .toList(growable: false);
 
               final wallets = _showClosedWallets ? allWallets : openWallets;
-
-              // Total should only include open accounts
-              final total = allAccounts
-                  .where((a) => !a.isClosed)
-                  .fold<double>(0, (s, a) => s + a.balance);
+              // Total (ledger-based) for open accounts
+              final totalFuture = _computeOpenTotalLedger(allAccounts);
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _TotalCashCard(total: total),
+                  FutureBuilder<double>(
+                    future: totalFuture,
+                    builder: (context, totalSnap) {
+                      return _TotalCashCard(total: totalSnap.data ?? 0);
+                    },
+                  ),
                   const SizedBox(height: AppSpacing.lg),
 
                   // Cash in hand section
@@ -160,7 +175,8 @@ class _CashAccountsScreenState extends State<CashAccountsScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(AppSpacing.md),
                         child: _CashOrWalletRow(
-                          account: cash,
+            account: cash,
+            transactionRepository: widget.transactionRepository,
                           isCash: true,
                           onEdit: null, // Cash not edited via this flow
                         ),
@@ -232,7 +248,8 @@ class _CashAccountsScreenState extends State<CashAccountsScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.all(AppSpacing.md),
                                 child: _CashOrWalletRow(
-                                  account: wallet,
+            account: wallet,
+            transactionRepository: widget.transactionRepository,
                                   isCash: false,
                                   onEdit: () => _onEditWallet(wallet),
                                 ),
@@ -304,11 +321,13 @@ class _TotalCashCard extends StatelessWidget {
 
 class _CashOrWalletRow extends StatelessWidget {
   final CashAccount account;
+  final TransactionRepository transactionRepository;
   final bool isCash;
   final VoidCallback? onEdit;
 
   const _CashOrWalletRow({
     required this.account,
+    required this.transactionRepository,
     required this.isCash,
     this.onEdit,
   });
@@ -356,9 +375,15 @@ class _CashOrWalletRow extends StatelessWidget {
             ],
           ),
         ),
-        Text(
-          currency.format(account.balance),
-          style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+        FutureBuilder<double>(
+          future: transactionRepository.computeBalance(accountId: account.id),
+          builder: (context, snap) {
+            final v = snap.data ?? 0.0;
+            return Text(
+              currency.format(v),
+              style: textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+            );
+          },
         ),
         if (onEdit != null) ...[
           const SizedBox(width: AppSpacing.sm),

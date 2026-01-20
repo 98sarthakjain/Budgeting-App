@@ -1,5 +1,7 @@
 // lib/features/cards/presentation/credit_cards_screen.dart
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:budgeting_app/core/design/spacing.dart';
@@ -10,6 +12,7 @@ import 'package:budgeting_app/features/cards/domain/credit_card.dart';
 import 'package:budgeting_app/features/cards/presentation/add_card_screen.dart';
 import 'package:budgeting_app/features/cards/presentation/credit_card_detail_screen.dart';
 import 'package:budgeting_app/features/transactions/data/transaction_repository.dart';
+import 'package:budgeting_app/features/transactions/domain/transaction.dart';
 
 class CreditCardsScreen extends StatefulWidget {
   final CardRepository repository;
@@ -26,6 +29,7 @@ class CreditCardsScreen extends StatefulWidget {
 }
 
 class _CreditCardsScreenState extends State<CreditCardsScreen> {
+  late final StreamSubscription<List<dynamic>> _txnSub;
   bool _showClosed = false;
 
   @override

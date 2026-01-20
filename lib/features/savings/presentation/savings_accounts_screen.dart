@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:budgeting_app/core/design/spacing.dart';
@@ -26,6 +28,7 @@ class SavingsAccountsScreen extends StatefulWidget {
 class _SavingsAccountsScreenState extends State<SavingsAccountsScreen> {
   bool _showClosed = false;
   late Future<List<SavingsAccount>> _future;
+  late StreamSubscription _txnSub;
 
   @override
   void initState() {
